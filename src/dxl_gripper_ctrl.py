@@ -195,15 +195,24 @@ if dxl_addparam_result != True:
 	print("[ID:%03d] groupSyncRead addparam failed" % DXL4_ID)
 	quit()
 
+	
+def dis2inc(dist):
+	if dist > 0.1:
+		dist = 0.1
+	elif dist < 0:
+		dist = 0
+	
+	dist = dist/2 + 0.0065  # 0.0065 --> adjust using silicon thickness
+	inc = int(math.degrees(math.asin((dist-0.0175)/0.07))/0.0879)
+	
+	return inc
 
 
 def gripper_sync_move1(req):
-	global param_goal_pos
+	#global param_goal_pos
 	
 	complete = 0	
-	temp = int(req.dist)
-	
-	param_goal_pos = temp
+	param_goal_pos = dis2inc(req.dist)
 
 	dxl_goal_pos1 = 2048 - param_goal_pos
 	dxl_goal_pos2 = 2048 + param_goal_pos
@@ -257,12 +266,11 @@ def gripper_sync_move1(req):
 
 
 def gripper_sync_move2(req):
-	global param_goal_pos
+	#global param_goal_pos
 
 	complete = 0
-	temp = int(req.dist)
 
-	param_goal_pos = temp
+	param_goal_pos = dis2inc(req.dist)
 
 	dxl_goal_pos1 = 2048 - param_goal_pos
 	dxl_goal_pos2 = 2048 + param_goal_pos
